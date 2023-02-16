@@ -59,6 +59,12 @@ public class AutosController {
         return automobile == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(automobile);
     }
 
+    @DeleteMapping("autos/{vin}")
+    public ResponseEntity<Automobile> deleteAuto(@PathVariable String vin) {
+        Automobile automobile = autosService.deleteAuto(vin);
+        return automobile == null ? ResponseEntity.noContent().build() : ResponseEntity.accepted().build();
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void invalidAutoExceptionHandler(InvalidAutoException e) {

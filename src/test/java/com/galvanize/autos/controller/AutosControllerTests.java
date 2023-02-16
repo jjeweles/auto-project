@@ -58,9 +58,6 @@ public class AutosControllerTests {
                 .andExpect(status().isNoContent());
     }
 
-    // ! GET: /api/autos?color=red Returns List of Autos with Color Red
-    // TODO fix this test
-
     // GET: /api/autos?make=ford Returns List of Autos with Make Ford
     @Test
     void getAutosWithColorParamReturnsAutosList() throws Exception {
@@ -169,9 +166,22 @@ public class AutosControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-// DELETE: /api/autos/{vin}
+// * DELETE: /api/autos/{vin}
     // DELETE: /api/autos/{vin} Returns 202, Delete Request Accepted
-    // DELETE: /api/autos/{vin} Returns 204, No Content (Auto Not Found)
+    @Test
+    void deleteAutoReturns202DeleteRequestAccepted() throws Exception {
+        Automobile automobile = new Automobile(1967, "Ford", "Mustang", "AABBCC");
+        when(autosService.deleteAuto(anyString())).thenReturn(automobile);
+        mockMvc.perform(delete("/api/autos/" + automobile.getVin()))
+                .andExpect(status().isAccepted());
+    }
 
+    // DELETE: /api/autos/{vin} Returns 204, No Content (Auto Not Found)
+    @Test
+    void deleteAutoReturns204NoContentAutoNotFound() throws Exception {
+        when(autosService.deleteAuto(anyString())).thenReturn(null);
+        mockMvc.perform(delete("/api/autos/AABBCC"))
+                .andExpect(status().isNoContent());
+    }
 
 }
