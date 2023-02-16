@@ -37,6 +37,12 @@ public class AutosController {
         return autosService.addAuto(automobile);
     }
 
+    @GetMapping("autos/{vin}")
+    public ResponseEntity<Automobile> getAutoByVin(@PathVariable String vin) {
+        Automobile automobile = autosService.getAutoByVin(vin);
+        return automobile == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(automobile);
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void invalidAutoExceptionHandler(InvalidAutoException e) {

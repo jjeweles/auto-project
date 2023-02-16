@@ -21,4 +21,8 @@ public class AutosService {
     public Automobile addAuto(Automobile any) {
         return null;
     }
+
+    public Automobile getAutoByVin(String vin) {
+        return null;
+    }
 }

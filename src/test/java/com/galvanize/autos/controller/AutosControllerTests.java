@@ -111,12 +111,32 @@ public class AutosControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-// GET: /api/autos/{vin}
+// * GET: /api/autos/{vin}
     // GET: /api/autos/{vin} Returns Requested Auto
-    // GET: /api/autos/{vin} Returns NoContent (204) When Auto Not Found
+    @Test
+    void getAutoByVinReturnsAuto() throws Exception {
+        Automobile automobile = new Automobile(1967, "Ford", "Mustang", "AABBCC");
+        when(autosService.getAutoByVin(anyString())).thenReturn(automobile);
+        mockMvc.perform(get("/api/autos/AABBCC"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("make").value("Ford"))
+                .andExpect(jsonPath("model").value("Mustang"))
+                .andExpect(jsonPath("year").value(1967));
+    }
 
-// PATCH: /api/autos/{vin}
+    // GET: /api/autos/{vin} Returns NoContent (204) When Auto Not Found
+    @Test
+    void getAutoByVinReturnsNoContentWhenAutoNotFound() throws Exception {
+        when(autosService.getAutoByVin(anyString())).thenReturn(null);
+        mockMvc.perform(get("/api/autos/AABBCC"))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+// * PATCH: /api/autos/{vin}
     // PATCH: /api/autos/{vin} Returns Patched Auto
+
     // PATCH: /api/autos/{vin} Returns NoContent (204) When Auto Not Found
     // PATCH: /api/autos/{vin} Returns 400 Bad Request (No Payload, No Changes, Already Done?)
 
