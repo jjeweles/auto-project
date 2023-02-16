@@ -1,5 +1,7 @@
 package com.galvanize.autos.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.galvanize.autos.exception.InvalidAutoException;
 import com.galvanize.autos.model.Automobile;
 import com.galvanize.autos.model.AutosList;
 import com.galvanize.autos.service.AutosService;
@@ -7,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -29,8 +32,9 @@ public class AutosControllerTests {
     @MockBean
     private AutosService autosService;
 
-// GET: /api/autos
+    ObjectMapper mapper = new ObjectMapper();
 
+// * GET: /api/autos
     // GET: /api/autos Returns List of All Autos
     @Test
     void getAutosNoParamsExistsReturnsAutosList() throws Exception {
@@ -82,9 +86,30 @@ public class AutosControllerTests {
                 .andExpect(jsonPath("$.automobiles", hasSize(5)));
     }
 
-// POST: /api/autos
+// * POST: /api/autos
     // POST: /api/autos Returns Created Auto
+    @Test
+    void addAutoReturnsCreatedAuto() throws Exception {
+        Automobile automobile = new Automobile(1967, "Ford", "Mustang", "AABBCC");
+        String json = mapper.writeValueAsString(automobile);
+        when(autosService.addAuto(any(Automobile.class))).thenReturn(automobile);
+        mockMvc.perform(post("/api/autos").contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("make").value("Ford"));
+    }
+
     // POST: /api/autos Returns Error Message Due To Bad Request (400)
+    @Test
+    void addAutoReturnsErrorMessageDueToBadRequest() throws Exception {
+        String json = "{\"make\": \"Ford\", \"model\": \"Mustang\", \"year\": \"1967\", \"vin\": \"AABBCC\"}";
+        when(autosService.addAuto(any(Automobile.class))).thenThrow(InvalidAutoException.class);
+        mockMvc.perform(post("/api/autos").contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
 
 // GET: /api/autos/{vin}
     // GET: /api/autos/{vin} Returns Requested Auto

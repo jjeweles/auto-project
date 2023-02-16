@@ -1,12 +1,12 @@
 package com.galvanize.autos.controller;
 
+import com.galvanize.autos.exception.InvalidAutoException;
+import com.galvanize.autos.model.Automobile;
 import com.galvanize.autos.model.AutosList;
 import com.galvanize.autos.service.AutosService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/")
@@ -32,5 +32,14 @@ public class AutosController {
         return autosList.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(autosList);
     }
 
+    @PostMapping("autos")
+    public Automobile addAuto(@RequestBody Automobile automobile) {
+        return autosService.addAuto(automobile);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public void invalidAutoExceptionHandler(InvalidAutoException e) {
+    }
 
 }
