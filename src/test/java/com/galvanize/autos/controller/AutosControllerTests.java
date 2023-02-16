@@ -1,6 +1,7 @@
 package com.galvanize.autos.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.galvanize.autos.exception.AutoNotFoundException;
 import com.galvanize.autos.exception.InvalidAutoException;
 import com.galvanize.autos.model.Automobile;
 import com.galvanize.autos.model.AutosList;
@@ -179,7 +180,7 @@ public class AutosControllerTests {
     // DELETE: /api/autos/{vin} Returns 204, No Content (Auto Not Found)
     @Test
     void deleteAutoReturns204NoContentAutoNotFound() throws Exception {
-        when(autosService.deleteAuto(anyString())).thenReturn(null);
+        doThrow(new AutoNotFoundException()).when(autosService).deleteAuto(anyString());
         mockMvc.perform(delete("/api/autos/AABBCC"))
                 .andExpect(status().isNoContent());
     }

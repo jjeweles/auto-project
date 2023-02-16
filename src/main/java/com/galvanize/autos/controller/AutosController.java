@@ -1,6 +1,7 @@
 package com.galvanize.autos.controller;
 
 import com.galvanize.autos.UpdateOwnerRequest;
+import com.galvanize.autos.exception.AutoNotFoundException;
 import com.galvanize.autos.exception.InvalidAutoException;
 import com.galvanize.autos.model.Automobile;
 import com.galvanize.autos.model.AutosList;
@@ -61,8 +62,12 @@ public class AutosController {
 
     @DeleteMapping("autos/{vin}")
     public ResponseEntity<Automobile> deleteAuto(@PathVariable String vin) {
-        Automobile automobile = autosService.deleteAuto(vin);
-        return automobile == null ? ResponseEntity.noContent().build() : ResponseEntity.accepted().build();
+        try {
+            autosService.deleteAuto(vin);
+        } catch (AutoNotFoundException e) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.accepted().build();
     }
 
     @ExceptionHandler
