@@ -1,5 +1,6 @@
 package com.galvanize.autos.controller;
 
+import com.galvanize.autos.UpdateOwnerRequest;
 import com.galvanize.autos.exception.InvalidAutoException;
 import com.galvanize.autos.model.Automobile;
 import com.galvanize.autos.model.AutosList;
@@ -40,6 +41,21 @@ public class AutosController {
     @GetMapping("autos/{vin}")
     public ResponseEntity<Automobile> getAutoByVin(@PathVariable String vin) {
         Automobile automobile = autosService.getAutoByVin(vin);
+        return automobile == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(automobile);
+    }
+
+    @PatchMapping("autos/{vin}")
+    public ResponseEntity<Automobile> updateAuto(@PathVariable String vin,
+                                 @RequestBody UpdateOwnerRequest update) {
+        Automobile automobile;
+        if (autosService.getAutoByVin(vin) == null) {
+            automobile = null;
+        } else {
+            automobile = autosService.updateAuto(vin, update.getColor(), update.getOwner());
+            automobile.setColor(update.getColor());
+            automobile.setOwner(update.getOwner());
+        }
+
         return automobile == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(automobile);
     }
 

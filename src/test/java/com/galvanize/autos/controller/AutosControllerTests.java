@@ -136,9 +136,38 @@ public class AutosControllerTests {
 
 // * PATCH: /api/autos/{vin}
     // PATCH: /api/autos/{vin} Returns Patched Auto
+    @Test
+    void updateAutoReturnsPatchedAuto() throws Exception {
+        Automobile automobile = new Automobile(1967, "Ford", "Mustang", "AABBCC");
+        when(autosService.updateAuto(anyString(), anyString(), anyString())).thenReturn(automobile);
+        when(autosService.getAutoByVin(anyString())).thenReturn(automobile);
+        mockMvc.perform(patch("/api/autos/" + automobile.getVin())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"color\":\"red\",\"owner\":\"John\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("color").value("red"))
+                .andExpect(jsonPath("owner").value("John"));
+    }
 
     // PATCH: /api/autos/{vin} Returns NoContent (204) When Auto Not Found
-    // PATCH: /api/autos/{vin} Returns 400 Bad Request (No Payload, No Changes, Already Done?)
+    @Test
+    void updateAutoReturnsNoContentWhenAutoNotFound() throws Exception {
+        when(autosService.updateAuto(anyString(), anyString(), anyString())).thenReturn(null);
+        mockMvc.perform(patch("/api/autos/AABBCC")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"color\":\"red\",\"owner\":\"John\"}"))
+                .andExpect(status().isNoContent());
+    }
+
+    // PATCH: /api/autos/{vin} Returns 400 Bad Request (No Payload)
+    @Test
+    void updateAutoReturnsBadRequestWhenNoPayload() throws Exception {
+        Automobile automobile = new Automobile(1967, "Ford", "Mustang", "AABBCC");
+        when(autosService.updateAuto(anyString(), anyString(), anyString())).thenReturn(automobile);
+        when(autosService.getAutoByVin(anyString())).thenReturn(automobile);
+        mockMvc.perform(patch("/api/autos/" + automobile.getVin()))
+                .andExpect(status().isBadRequest());
+    }
 
 // DELETE: /api/autos/{vin}
     // DELETE: /api/autos/{vin} Returns 202, Delete Request Accepted
