@@ -147,6 +147,7 @@ public class AutosControllerTests {
                 .andExpect(jsonPath("owner").value("John"));
     }
 
+    // PATCH: /api/autos/{vin} Returns Patched Auto
     // PATCH: /api/autos/{vin} Returns NoContent (204) When Auto Not Found
     @Test
     void updateAutoReturnsNoContentWhenAutoNotFound() throws Exception {
