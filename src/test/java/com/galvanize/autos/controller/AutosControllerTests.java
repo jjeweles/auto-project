@@ -30,6 +30,7 @@ public class AutosControllerTests {
     private AutosService autosService;
 
 // GET: /api/autos
+
     // GET: /api/autos Returns List of All Autos
     @Test
     void getAutosNoParamsExistsReturnsAutosList() throws Exception {
@@ -40,14 +41,46 @@ public class AutosControllerTests {
 
         when(autosService.getAutos()).thenReturn(new AutosList(automobiles));
         mockMvc.perform(get("/api/autos"))
-                .andDo(print())
+                // .andDo(print()) Prints the response to the console
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.automobiles", hasSize(5)));
     }
+
     // GET: /api/autos Returns 204 No Autos Found
-    // GET: /api/autos?color=red Returns List of Autos with Color Red
+    @Test
+    void getAutosNoParamsNoAutosReturns204NoContent() throws Exception {
+        when(autosService.getAutos()).thenReturn(new AutosList());
+        mockMvc.perform(get("/api/autos"))
+                .andExpect(status().isNoContent());
+    }
+
+    // ! GET: /api/autos?color=red Returns List of Autos with Color Red
+    // TODO fix this test
+
     // GET: /api/autos?make=ford Returns List of Autos with Make Ford
+    @Test
+    void getAutosWithColorParamReturnsAutosList() throws Exception {
+        List<Automobile> automobiles = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            automobiles.add(new Automobile(1967 + i, "Ford", "Mustang", "AABB" + i));
+        }
+        when(autosService.getAutos(anyString())).thenReturn(new AutosList(automobiles));
+        mockMvc.perform(get("/api/autos?make=red"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.automobiles", hasSize(5)));
+    }
     // GET: /api/autos?make=ford&color=red Returns List of Autos with Make Ford and Color Red
+    @Test
+    void getAutosWithParamsReturnsAutosList() throws Exception {
+        List<Automobile> automobiles = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            automobiles.add(new Automobile(1967 + i, "Ford", "Mustang", "AABB" + i));
+        }
+        when(autosService.getAutos(anyString(), anyString())).thenReturn(new AutosList(automobiles));
+        mockMvc.perform(get("/api/autos?make=ford&color=red"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.automobiles", hasSize(5)));
+    }
 
 // POST: /api/autos
     // POST: /api/autos Returns Created Auto
