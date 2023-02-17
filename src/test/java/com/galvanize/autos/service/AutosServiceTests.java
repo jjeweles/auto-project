@@ -39,7 +39,7 @@ public class AutosServiceTests {
     }
 
     @Test
-    public void getAutosWithParamsReturnsListOfAutosWithMatchingParams() {
+    public void getAutosWithParamsReturnsListOfAutosWithMatchingParamsColorAndMake() {
         Automobile automobile = new Automobile(1999, "Ford", "Mustang", "1FAFP4042XG123456");
         automobile.setColor("Red");
         when(autosRepository.findByColorContainsAndMakeContains(anyString(), anyString()))
@@ -47,7 +47,16 @@ public class AutosServiceTests {
         AutosList autosList = autosService.getAutos("Red", "Ford");
         assertThat(autosList).isNotNull();
         assertThat(autosList.isEmpty()).isFalse();
+    }
 
+    @Test
+    public void getAutosWithOneParamMakeReturnsListOfAutosWithMatchingParamMake() {
+        Automobile automobile = new Automobile(1999, "Ford", "Mustang", "1FAFP4042XG123456");
+        when(autosRepository.findByMakeContains(anyString()))
+                .thenReturn(List.of(automobile));
+        AutosList autosList = autosService.getAutos("Ford");
+        assertThat(autosList).isNotNull();
+        assertThat(autosList.isEmpty()).isFalse();
     }
 
 }

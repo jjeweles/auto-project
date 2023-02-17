@@ -24,18 +24,19 @@ public class AutosService {
     }
 
     public AutosList getAutos(String color, String make) {
-//        List<Automobile> automobiles = autosRepository.findByColorContainsAndMakeContains(color, make);
-//        if (!automobiles.isEmpty()) {
-//            return new AutosList(automobiles);
-//        }
-        return new AutosList(autosRepository.findByColorContainsAndMakeContains(color, make));
+        List<Automobile> automobiles = autosRepository.findByColorContainsAndMakeContains(color, make);
+        //if (!automobiles.isEmpty()) {
+        //    return new AutosList(automobiles);
+        //}
+        return automobiles == null ? null : new AutosList(autosRepository.findByColorContainsAndMakeContains(color, make));
     }
 
     public AutosList getAutos(String make) {
-        // Query DB: SELECT * FROM autos WHERE make = ?;
-        // Put results into AutosList
-        // Return new AutosList with results
-        return new AutosList(autosRepository.findByMakeContains(make));
+        List<Automobile> automobiles = autosRepository.findByMakeContains(make);
+        //if (!automobiles.isEmpty()) {
+        //    return new AutosList(automobiles);
+        //}
+        return automobiles == null ? null : new AutosList(autosRepository.findByMakeContains(make));
     }
 
     public Automobile addAuto(Automobile any) {
