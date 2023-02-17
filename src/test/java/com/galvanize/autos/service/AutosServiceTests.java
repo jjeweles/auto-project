@@ -81,7 +81,13 @@ public class AutosServiceTests {
 
     @Test
     public void updateAutoShouldUpdateAutoWithMatchingVin() {
-
+        Automobile automobile = new Automobile(1999, "Ford", "Mustang", "1FAFP4042XG123456");
+        automobile.setColor("Red");
+        when(autosRepository.findByVin(anyString())).thenReturn(Optional.of(automobile));
+        when(autosRepository.save(any(Automobile.class))).thenReturn(automobile);
+        Automobile auto = autosService.updateAuto("1FAFP4042XG123456", "orange", "Jeffrey");
+        assertThat(auto).isNotNull();
+        assertThat(auto.getVin()).isEqualTo(automobile.getVin());
     }
 
 }
