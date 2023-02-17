@@ -11,8 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -57,6 +59,29 @@ public class AutosServiceTests {
         AutosList autosList = autosService.getAutos("Ford");
         assertThat(autosList).isNotNull();
         assertThat(autosList.isEmpty()).isFalse();
+    }
+
+    @Test
+    public void addAutoShouldAddAutoToAutosList() {
+        Automobile automobile = new Automobile(1999, "Ford", "Mustang", "1FAFP4042XG123456");
+        when(autosRepository.save(any(Automobile.class))).thenReturn(automobile);
+        Automobile addedAuto = autosService.addAuto(automobile);
+        assertThat(addedAuto).isNotNull();
+        assertThat(addedAuto.getVin()).isEqualTo(automobile.getVin());
+    }
+
+    @Test
+    public void getAutoByVinReturnsAutoWithMatchingVin() {
+        Automobile automobile = new Automobile(1999, "Ford", "Mustang", "1FAFP4042XG123456");
+        when(autosRepository.findByVin(anyString())).thenReturn(Optional.of(automobile));
+        Automobile auto = autosService.getAutoByVin("1FAFP4042XG123456");
+        assertThat(auto).isNotNull();
+        assertThat(auto.getVin()).isEqualTo(automobile.getVin());
+    }
+
+    @Test
+    public void updateAutoShouldUpdateAutoWithMatchingVin() {
+
     }
 
 }

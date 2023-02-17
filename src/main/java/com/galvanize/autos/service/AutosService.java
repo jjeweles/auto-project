@@ -39,12 +39,12 @@ public class AutosService {
         return automobiles == null ? null : new AutosList(autosRepository.findByMakeContains(make));
     }
 
-    public Automobile addAuto(Automobile any) {
-        return null;
+    public Automobile addAuto(Automobile automobile) {
+        return autosRepository.save(automobile);
     }
 
     public Automobile getAutoByVin(String vin) {
-        return null;
+        return autosRepository.findByVin(vin).orElse(null);
     }
 
     public Automobile updateAuto(String vin, String color, String owner) {
