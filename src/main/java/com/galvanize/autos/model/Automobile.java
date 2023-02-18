@@ -7,21 +7,21 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
-@SuppressWarnings("JpaDataSourceORMInspection")
+//@SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
-@Table(name = "automobiles")
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@Table(name = "automobiles")
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Automobile {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "model_year")
+//    @Column(name = "model_year")
     private int year;
     private String make;
     private String model;
     private String color;
-    @Column(name = "owner_name")
+//    @Column(name = "owner_name")
     private String owner;
-    @JsonFormat(pattern = "MM/dd/yyyy")
+//    @JsonFormat(pattern = "MM/dd/yyyy")
     private Date purchaseDate;
     private String vin;
 
